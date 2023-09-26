@@ -3,6 +3,9 @@ const radios = document.querySelectorAll(".settings [type='radio']");
 const doc = document.documentElement;
 
 function updateSiteUi({ name, value }) {
+  if(name === "customColor"){
+    return doc.style.setProperty("--customColor", `var(--${value})`)
+  }
   return (doc.dataset[name] = value);
 }
 
