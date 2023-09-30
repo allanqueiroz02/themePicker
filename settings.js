@@ -6,11 +6,44 @@ const audioToggle = document.querySelector("#audio-toggle");
 
 let isAudioPlayable;
 
+const settings = [
+  {
+    key: "sound",
+    default: "false",
+  },
+  {
+    key: "motion",
+    default: "false",
+  },
+  {
+    key: "theme",
+    default: "system",
+  },
+  {
+    key: "round",
+    default: "false",
+  },
+  {
+    key: "customColor",
+    default: "accent2",
+  },
+];
+
 function updateSiteUi({ name, value }) {
   if (name === "customColor") {
     return doc.style.setProperty("--customColor", `var(--${value})`);
   }
   return (doc.dataset[name] = value);
+}
+
+function updateSettingsUi({ name, value }) {
+  if (value === "true" || value === "false") {
+    const checkbox = document.querySelector(`[name="${name}"]`);
+    return (checkbox.checked = value === "true" ? true : false);
+  }
+
+  const radio = document.querySelector(`#${value}`);
+  return (radio.checked = true);
 }
 
 function playAudio(type) {
@@ -20,6 +53,17 @@ function playAudio(type) {
     audioSound.play();
   }
 }
+
+window.addEventListener("DOMContentLoaded", () => {
+  settings.forEach((setting) => {
+    const value = localStorage.getItem(setting.key) ?? setting.default;
+    updateSiteUi({ name: setting.key, value });
+    updateSettingsUi({ name: setting.key, value });
+    if (setting.key === "sound") {
+      isAudioPlayable = value === "true" ? true : false;
+    }
+  });
+});
 
 toggles.forEach((toggle) => {
   toggle.addEventListener("change", (event) => {
